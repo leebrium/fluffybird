@@ -24,7 +24,7 @@
 .vscode/
 
 #Release Directory
-.Release/
+Release/
 
 # Gradle cache directory
 .gradle/
