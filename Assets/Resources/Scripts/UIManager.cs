@@ -17,20 +17,20 @@ public class UIManager : MonoBehaviour
     public GameObject panelGameStart;    
     public GameObject panelGamePlay;
     public GameObject panelRank;
-    public Transform tfScore;
-    public Transform tfRankScore;
-    public Transform tfRankBestScore;
     public Image imgMedal;
     public Sprite[] spritesScore;
     public Sprite[] spritesMedal;
     private NativeShare share;
+    public Text txtScore;
+    public Text txtRankScore;
+    public Text txtRankBestScore;
 
     //Share
     private bool isFocus = false;
 	const string shareSubject = "I challenge you to beat my high score in Fluffy Bird";
-    public string shareMessage = "";
+    private string shareMessage = "";
 	const string screenshotName = "fluffybird_share.png";
-    public string urlPlayStore;
+    private string urlPlayStore;
 
     // Start is called before the first frame update
     void Start()
@@ -57,6 +57,7 @@ public class UIManager : MonoBehaviour
             panelRank.SetActive(true);
             panelRank.transform.GetChild(0).gameObject.SetActive(false); //Gameover
             panelGameOpen.SetActive(false);
+            setRankScore();
             setMedalRank();
             break;
 
@@ -74,11 +75,8 @@ public class UIManager : MonoBehaviour
             panelGamePlay.SetActive(false);
             panelRank.SetActive(true);
             GameManager.Instance.scoreManager.SaveScore();
+            setRankScore();
             setMedalRank();
-            showScoreTransform(GameManager.Instance.scoreManager.bestScore, tfRankBestScore);
-            showScoreTransform(GameManager.Instance.scoreManager.score, tfRankScore);
-            tfRankScore.localScale = Vector3.one * 0.4f;
-            tfRankBestScore.localScale = Vector3.one * 0.4f;
             break;
 
             default:
@@ -87,25 +85,7 @@ public class UIManager : MonoBehaviour
     }
 
     public void UpdateScore(int score){
-        showScoreTransform(score, tfScore);
-    }
-
-    private void showScoreTransform(int score, Transform parent) {
-        int count = parent.childCount;
-        List<int> splitsScore = new List<int>();
-        string strScore = score.ToString();
-        for(int i = 0; i<strScore.Length; i++){
-            splitsScore.Add(int.Parse(strScore[i].ToString()));
-        }
-
-        int countNewBlock = strScore.Length - count;
-        for(int i = 0; i < countNewBlock; i++){
-            addNewBlockScore(parent);
-        }
-        
-        for(int i = 0; i<parent.childCount; i++){
-            parent.transform.GetChild(i).GetComponent<Image>().sprite = spritesScore[splitsScore[i]];
-        }
+        txtScore.text = score.ToString();
     }
 
     private void setMedalRank(){
@@ -133,30 +113,9 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void addNewBlockScore(Transform parent){
-        int countBlock = parent.childCount;
-        GameObject imgScore = new GameObject();
-        Image image = imgScore.AddComponent<Image>();
-        image.sprite = spritesScore[0];
-        imgScore.transform.SetParent(parent);
-        imgScore.transform.SetAsLastSibling();
-        imgScore.transform.localScale = Vector3.one;
-        imgScore.transform.localPosition = Vector3.zero;
-        image.SetNativeSize();
-        float width = image.rectTransform.rect.width * 9;
-        float height = image.rectTransform.rect.height * 9;
-        float spacing = 5;
-        float xMultiplier = width / 2;
-        float startXPos = -(xMultiplier * countBlock);
-        image.rectTransform.sizeDelta = new Vector2(width, height);
-        width = width * (countBlock + 1) + spacing * (countBlock + 1);
-        RectTransform rectScore = parent.GetComponent<RectTransform>();
-        rectScore.sizeDelta = new Vector2(width, height);
-
-        for(int i = 0; i<parent.childCount; i++){
-            parent.transform.GetChild(i).localPosition = new Vector3(startXPos, 0, 0);
-            startXPos += (xMultiplier * 2 + spacing);
-        }
+    private void setRankScore(){
+        txtRankScore.text = GameManager.Instance.scoreManager.score.ToString();
+        txtRankBestScore.text = GameManager.Instance.scoreManager.bestScore.ToString();
     }
 
     public void PlayGame(){
