@@ -16,6 +16,7 @@ public class PipeSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        maxSpawnTime = GameManager.Instance.settings.maxSpawnTime;
         pipes = new GameObject[maxPipe];
         for(int i = 0; i<maxPipe; i++){
             pipes[i] = Instantiate(pipeFab);
