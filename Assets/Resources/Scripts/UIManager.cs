@@ -25,6 +25,8 @@ public class UIManager : MonoBehaviour
     public Text txtRankScore;
     public Text txtRankBestScore;
 
+    public Button btnContinue;
+
     //Share
     private bool isFocus = false;
 	const string shareSubject = "I challenge you to beat my high score in Fluffy Bird";
@@ -40,6 +42,7 @@ public class UIManager : MonoBehaviour
 		"! Get the Fluffy Bird game from Play Store the link below. \nCheers :D\n" +
 		"\nhttps://play.google.com/store/apps/details?id=" + Application.identifier;
 
+        btnContinue.onClick.AddListener(GameManager.Instance.adsManager.ShowRewardedAd);
     }
 
     void OnApplicationFocus (bool focus) {
