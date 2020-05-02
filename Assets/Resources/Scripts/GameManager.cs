@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
     public Menu currentMenu;
     public bool isFirstTime = true;
     public AdsManager adsManager;
+    public bool isContinue;
+    public bool hasContinued;
 
     //called zero
     void Awake()
@@ -60,7 +62,15 @@ public class GameManager : MonoBehaviour
         pipeSpawner.enabled = true;
         currentMenu = Menu.play;
         uiManager.SwitchMenu(currentMenu);
-        scoreManager.ResetScore();
+
+        if(isContinue) {
+            isContinue = false;
+            hasContinued = true;
+            
+            uiManager.AnimateContinueScreen();
+        } else {
+            scoreManager.ResetScore();
+        }
     }
 
     public void GameOver(){
@@ -77,5 +87,7 @@ public class GameManager : MonoBehaviour
 
     public void ContinueGame() {
         Debug.Log("Continue Game");
+        isContinue = true;
+        Replay();
     }
 }

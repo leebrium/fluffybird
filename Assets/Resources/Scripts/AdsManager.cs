@@ -6,13 +6,14 @@ using GoogleMobileAds.Api;
 
 public class AdsManager : MonoBehaviour
 {
-    // private string appID = "ca-app-pub-9555394069851847~9682330316"; // test
-    // private string bannerID = "ca-app-pub-3940256099942544/6300978111"; //test
-    private string appID = "ca-app-pub-9555394069851847~9682330316";
-    private string bannerID = "ca-app-pub-9555394069851847/8177676953";
-    private BannerView bannerView;
+    private string appID = "ca-app-pub-9555394069851847~9682330316"; // test
+    private string bannerID = "ca-app-pub-3940256099942544/6300978111"; //test
+    private string rewardAdID = "ca-app-pub-3940256099942544/5224354917"; //test
     
-    private string rewardAdID = "ca-app-pub-9555394069851847/1291629979";
+    // private string appID = "ca-app-pub-9555394069851847~9682330316";
+    // private string bannerID = "ca-app-pub-9555394069851847/8177676953";
+    // private string rewardAdID = "ca-app-pub-9555394069851847/1291629979";
+    private BannerView bannerView;
     private RewardBasedVideoAd rewardAd;
 
     // Start is called before the first frame update

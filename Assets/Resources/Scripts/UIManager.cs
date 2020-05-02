@@ -78,6 +78,9 @@ public class UIManager : MonoBehaviour
             panelGamePlay.SetActive(false);
             panelRank.SetActive(true);
             GameManager.Instance.scoreManager.SaveScore();
+            if(GameManager.Instance.hasContinued) {
+                btnContinue.gameObject.SetActive(false);
+            }
             setRankScore();
             setMedalRank();
             break;
@@ -147,5 +150,12 @@ public class UIManager : MonoBehaviour
     public void Rate(){
         Debug.Log("Rate");
         Application.OpenURL(urlPlayStore);
+    }
+
+    public void AnimateContinueScreen(){
+        GameObject splashContinue = Instantiate(Resources.Load<GameObject>("Prefabs/SplashContinue"));
+        splashContinue.transform.SetParent(this.transform);
+        splashContinue.transform.localScale = Vector3.one;
+        splashContinue.transform.position = this.transform.position;
     }
 }
