@@ -5,7 +5,9 @@ using UnityEngine;
 public class ScorePlus : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D other) {
-        SoundManager.Instance.playScored();
-        GameManager.Instance.scoreManager.AddScore();
+        if(!GameManager.Instance.gameOver) {
+            SoundManager.Instance.playScored();
+            GameManager.Instance.scoreManager.AddScore();
+        }
     }
 }

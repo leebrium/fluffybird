@@ -54,6 +54,11 @@ public class AdsManager : MonoBehaviour
         AdRequest request = new AdRequest.Builder().Build();
 
         rewardAd.LoadAd(request, rewardAdID);
+
+        this.rewardAd.OnAdRewarded += this.HandleUserEarnedReward;
+        this.rewardAd.OnAdLoaded += this.HandleRewardedAdLoaded;
+        this.rewardAd.OnAdFailedToLoad += this.HandleRewardedAdFailedLoad;
+        this.rewardAd.OnAdClosed += this.HandleRewardedAdVideoClosed;
     }
 
     public void ShowRewardedAd(){
@@ -104,9 +109,13 @@ public class AdsManager : MonoBehaviour
                             + args.Message);
     }
 
-    public void HandleRewardedAdVideoRewarded(object sender, EventArgs args)
+    public void HandleUserEarnedReward(object sender, Reward args)
     {
-        MonoBehaviour.print("HandleRewardedAdVideoRewarded event received");
+        string type = args.Type;
+        double amount = args.Amount;
+        MonoBehaviour.print(
+            "HandleRewardedAdRewarded event received for "
+                        + amount.ToString() + " " + type);
 
         GameManager.Instance.ContinueGame();
     }
