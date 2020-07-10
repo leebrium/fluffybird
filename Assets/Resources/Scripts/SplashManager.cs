@@ -45,6 +45,6 @@ public class SplashManager : MonoBehaviour
         animator.SetTrigger("TriggerFading");
 
         yield return new WaitForSeconds(animationTime);
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
 	}
 }

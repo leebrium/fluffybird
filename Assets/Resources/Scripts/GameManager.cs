@@ -87,7 +87,7 @@ public class GameManager : MonoBehaviour
 
     public void Replay(){
         gameOver = false;
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
     }
 
     public void ContinueGame() {
