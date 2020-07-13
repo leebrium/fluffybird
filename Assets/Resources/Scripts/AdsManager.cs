@@ -8,16 +8,23 @@ public class AdsManager : MonoBehaviour
 {
     // private string appID = "ca-app-pub-9555394069851847~9682330316"; // test
     // private string bannerID = "ca-app-pub-3940256099942544/6300978111"; //test
+    // private string rewardAdID = "ca-app-pub-3940256099942544/5224354917"; //test
+    
     private string appID = "ca-app-pub-9555394069851847~9682330316";
     private string bannerID = "ca-app-pub-9555394069851847/8177676953";
-    public BannerView bannerView;
+    private string rewardAdID = "ca-app-pub-9555394069851847/1291629979";
+    private BannerView bannerView;
+    private RewardBasedVideoAd rewardAd;
 
     // Start is called before the first frame update
     void Start()
     {
         Debug.Log("Ads Initialized");
         MobileAds.Initialize(appID);
+        rewardAd = RewardBasedVideoAd.Instance;
+
         RequestBanner();
+        RequestRewardedAd();
     }
 
     private void RequestBanner()
@@ -41,9 +48,28 @@ public class AdsManager : MonoBehaviour
 
         // Load the banner with the request.
         this.bannerView.LoadAd(request);
-
     }
 
+    public void RequestRewardedAd() {
+        AdRequest request = new AdRequest.Builder().Build();
+
+        rewardAd.LoadAd(request, rewardAdID);
+
+        this.rewardAd.OnAdRewarded += this.HandleUserEarnedReward;
+        this.rewardAd.OnAdLoaded += this.HandleRewardedAdLoaded;
+        this.rewardAd.OnAdFailedToLoad += this.HandleRewardedAdFailedLoad;
+        this.rewardAd.OnAdClosed += this.HandleRewardedAdVideoClosed;
+    }
+
+    public void ShowRewardedAd(){
+        if (rewardAd.IsLoaded()) {
+            rewardAd.Show();
+        } else {
+            Debug.Log("Rewarded Ad not Loaded");
+        }
+    }
+
+    //Banner
     public void HandleOnAdLoaded(object sender, EventArgs args)
     {
         MonoBehaviour.print("HandleAdLoaded event received");
@@ -68,5 +94,36 @@ public class AdsManager : MonoBehaviour
     public void HandleOnAdLeavingApplication(object sender, EventArgs args)
     {
         MonoBehaviour.print("HandleAdLeavingApplication event received");
+    }
+
+
+    //RewardedAd
+    public void HandleRewardedAdLoaded(object sender, EventArgs args)
+    {
+        MonoBehaviour.print("HandleRewardedAdLoaded event received");
+    }
+
+    public void HandleRewardedAdFailedLoad(object sender, AdFailedToLoadEventArgs args)
+    {
+        MonoBehaviour.print("HandleRewardedAdFailedLoad event received with message: "
+                            + args.Message);
+    }
+
+    public void HandleUserEarnedReward(object sender, Reward args)
+    {
+        string type = args.Type;
+        double amount = args.Amount;
+        MonoBehaviour.print(
+            "HandleRewardedAdRewarded event received for "
+                        + amount.ToString() + " " + type);
+
+        GameManager.Instance.ContinueGame();
+    }
+
+    public void HandleRewardedAdVideoClosed(object sender, EventArgs args)
+    {
+        MonoBehaviour.print("HandleRewardedAdVideoClosed event received");
+
+        RequestRewardedAd();
     }
 }

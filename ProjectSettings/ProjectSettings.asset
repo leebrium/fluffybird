@@ -119,7 +119,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 1.0
+  bundleVersion: v2.0
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -160,7 +160,7 @@ PlayerSettings:
     Android: com.leebrium.fluffybird
     Standalone: com.Company.ProductName
   buildNumber: {}
-  AndroidBundleVersionCode: 3
+  AndroidBundleVersionCode: 8
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
@@ -249,7 +249,7 @@ PlayerSettings:
   AndroidTargetArchitectures: 3
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: D:/Project/Unity/Fluffy Bird/Keystore/fluffybird.keystore
+  AndroidKeystoreName: D:/Project/Unity/fluffybird/Release/Keystore/fluffybird.keystore
   AndroidKeyaliasName: fluffybird
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
@@ -267,7 +267,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: dabf0ecfde5c7df4288c13940492a99e, type: 3}
+      m_Icon: {fileID: 2800000, guid: 097f4268738e3cf49991341496d8d2e5, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0

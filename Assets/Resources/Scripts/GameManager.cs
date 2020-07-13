@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
     public Menu currentMenu;
     public bool isFirstTime = true;
     public AdsManager adsManager;
+    public bool isContinue;
+    public bool hasContinued;
+    public bool gameOver;
 
     //called zero
     void Awake()
@@ -46,32 +49,50 @@ public class GameManager : MonoBehaviour
         } else {
             bird.setStartPosition();
             currentMenu = Menu.start;
+            
+            if(isContinue) {
+                uiManager.panelGamePlay.SetActive(true);
+                uiManager.AnimateContinueScreen();
+            }
         }
+        
         uiManager.SwitchMenu(currentMenu);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        Time.timeScale = 1;
     }
 
     public void PlayGame(){
         pipeSpawner.enabled = true;
         currentMenu = Menu.play;
         uiManager.SwitchMenu(currentMenu);
-        scoreManager.ResetScore();
+
+        if(isContinue) {
+            isContinue = false;
+            hasContinued = true;
+        } else {
+            hasContinued = false;
+            scoreManager.ResetScore();
+        }
     }
 
     public void GameOver(){
+        gameOver = true;
         SoundManager.Instance.playDeath();
-        Time.timeScale = 0;
         currentMenu = Menu.over;
         uiManager.SwitchMenu(currentMenu);
     }
 
     public void Replay(){
+        gameOver = false;
         SceneManager.LoadScene(0);
-        Time.timeScale = 1;
+    }
+
+    public void ContinueGame() {
+        Debug.Log("Continue Game");
+        isContinue = true;
+        Replay();
     }
 }
