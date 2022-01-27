@@ -249,7 +249,7 @@ PlayerSettings:
   AndroidTargetArchitectures: 3
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: D:/Project/Unity/fluffybird/Release/Keystore/fluffybird.keystore
+  AndroidKeystoreName: /Volumes/GoogleDrive/My Drive/FluffyBird/Keystore/fluffybird.keystore
   AndroidKeyaliasName: fluffybird
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
