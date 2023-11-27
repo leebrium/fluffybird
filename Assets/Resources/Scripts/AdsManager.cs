@@ -6,22 +6,22 @@ using GoogleMobileAds.Api;
 
 public class AdsManager : MonoBehaviour
 {
-    // private string appID = "ca-app-pub-9555394069851847~9682330316"; // test
     // private string bannerID = "ca-app-pub-3940256099942544/6300978111"; //test
     // private string rewardAdID = "ca-app-pub-3940256099942544/5224354917"; //test
     
-    private string appID = "ca-app-pub-9555394069851847~9682330316";
-    private string bannerID = "ca-app-pub-9555394069851847/8177676953";
-    private string rewardAdID = "ca-app-pub-9555394069851847/1291629979";
+    private string bannerID = "ca-app-pub-9555394069851847/6478269436";
+    private string rewardAdID = "ca-app-pub-9555394069851847/6238596285";
     private BannerView bannerView;
-    private RewardBasedVideoAd rewardAd;
+    private RewardedAd rewardAd;
 
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Ads Initialized");
-        MobileAds.Initialize(appID);
-        rewardAd = RewardBasedVideoAd.Instance;
+        // Initialize the Google Mobile Ads SDK.
+        MobileAds.Initialize((InitializationStatus initStatus) =>
+        {
+            // This callback is called once the MobileAds SDK is initialized.
+        });
 
         RequestBanner();
         RequestRewardedAd();
@@ -29,101 +29,52 @@ public class AdsManager : MonoBehaviour
 
     private void RequestBanner()
     {
+        if (bannerView != null)
+        {
+            bannerView.Destroy();
+            bannerView = null;
+        }
+
         // Create a 320x50 banner at the top of the screen.
         this.bannerView = new BannerView(bannerID, AdSize.Banner, AdPosition.Bottom);
 
-        // Called when an ad request has successfully loaded.
-        this.bannerView.OnAdLoaded += this.HandleOnAdLoaded;
-        // Called when an ad request failed to load.
-        this.bannerView.OnAdFailedToLoad += this.HandleOnAdFailedToLoad;
-        // Called when an ad is clicked.
-        this.bannerView.OnAdOpening += this.HandleOnAdOpened;
-        // Called when the user returned from the app after an ad click.
-        this.bannerView.OnAdClosed += this.HandleOnAdClosed;
-        // Called when the ad click caused the user to leave the application.
-        this.bannerView.OnAdLeavingApplication += this.HandleOnAdLeavingApplication;
-
         // Create an empty ad request.
-        AdRequest request = new AdRequest.Builder().Build();
+        AdRequest request = new AdRequest();
 
         // Load the banner with the request.
         this.bannerView.LoadAd(request);
     }
 
     public void RequestRewardedAd() {
-        AdRequest request = new AdRequest.Builder().Build();
+        if (rewardAd != null)
+        {
+            rewardAd.Destroy();
+            rewardAd = null;
+        }
 
-        rewardAd.LoadAd(request, rewardAdID);
+        AdRequest request = new AdRequest();
 
-        this.rewardAd.OnAdRewarded += this.HandleUserEarnedReward;
-        this.rewardAd.OnAdLoaded += this.HandleRewardedAdLoaded;
-        this.rewardAd.OnAdFailedToLoad += this.HandleRewardedAdFailedLoad;
-        this.rewardAd.OnAdClosed += this.HandleRewardedAdVideoClosed;
+        RewardedAd.Load(rewardAdID, request, 
+        (RewardedAd ad, LoadAdError error) => {
+            rewardAd = ad;
+        });
+
+        this.rewardAd.OnAdFullScreenContentClosed += () => {
+            RequestRewardedAd();
+        };
+
+        this.rewardAd.OnAdFullScreenContentFailed += (AdError error) => {
+            RequestRewardedAd();
+        };
     }
 
     public void ShowRewardedAd(){
-        if (rewardAd.IsLoaded()) {
-            rewardAd.Show();
+        if (rewardAd != null && rewardAd.CanShowAd()) {
+            rewardAd.Show((Reward reward) => {
+                GameManager.Instance.ContinueGame();
+            });
         } else {
-            Debug.Log("Rewarded Ad not Loaded");
+            RequestRewardedAd();
         }
-    }
-
-    //Banner
-    public void HandleOnAdLoaded(object sender, EventArgs args)
-    {
-        MonoBehaviour.print("HandleAdLoaded event received");
-    }
-
-    public void HandleOnAdFailedToLoad(object sender, AdFailedToLoadEventArgs args)
-    {
-        MonoBehaviour.print("HandleFailedToReceiveAd event received with message: "
-                            + args.Message);
-    }
-
-    public void HandleOnAdOpened(object sender, EventArgs args)
-    {
-        MonoBehaviour.print("HandleAdOpened event received");
-    }
-
-    public void HandleOnAdClosed(object sender, EventArgs args)
-    {
-        MonoBehaviour.print("HandleAdClosed event received");
-    }
-
-    public void HandleOnAdLeavingApplication(object sender, EventArgs args)
-    {
-        MonoBehaviour.print("HandleAdLeavingApplication event received");
-    }
-
-
-    //RewardedAd
-    public void HandleRewardedAdLoaded(object sender, EventArgs args)
-    {
-        MonoBehaviour.print("HandleRewardedAdLoaded event received");
-    }
-
-    public void HandleRewardedAdFailedLoad(object sender, AdFailedToLoadEventArgs args)
-    {
-        MonoBehaviour.print("HandleRewardedAdFailedLoad event received with message: "
-                            + args.Message);
-    }
-
-    public void HandleUserEarnedReward(object sender, Reward args)
-    {
-        string type = args.Type;
-        double amount = args.Amount;
-        MonoBehaviour.print(
-            "HandleRewardedAdRewarded event received for "
-                        + amount.ToString() + " " + type);
-
-        GameManager.Instance.ContinueGame();
-    }
-
-    public void HandleRewardedAdVideoClosed(object sender, EventArgs args)
-    {
-        MonoBehaviour.print("HandleRewardedAdVideoClosed event received");
-
-        RequestRewardedAd();
     }
 }
